@@ -1,0 +1,76 @@
+{
+  "project_info": {
+    "project_number": "569644459810",
+    "project_id": "doctoradmin-11148",
+    "storage_bucket": "doctoradmin-11148.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:569644459810:android:8954218ebd8e001830277b",
+        "android_client_info": {
+          "package_name": "com.example.doctoradmin"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "569644459810-ja3rt9q7mum4hkfkel3ivdrefcokbpfm.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.doctoradmin",
+            "certificate_hash": "d7d8c5e79e359f511392a41c3f8483b24739462c"
+          }
+        },
+        {
+          "client_id": "569644459810-6r8nj6p3137m2p0uuv04qqdvbr4n90la.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDF76QjbN-59RmPZwoBfspyPVcuojUxPps"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "569644459810-6r8nj6p3137m2p0uuv04qqdvbr4n90la.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:569644459810:android:2643e6106dbb7aa830277b",
+        "android_client_info": {
+          "package_name": "com.example.doctoradmin_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "569644459810-6r8nj6p3137m2p0uuv04qqdvbr4n90la.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDF76QjbN-59RmPZwoBfspyPVcuojUxPps"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "569644459810-6r8nj6p3137m2p0uuv04qqdvbr4n90la.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
