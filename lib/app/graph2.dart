@@ -31,7 +31,7 @@ class Graph2 extends StatelessWidget {
                 FlSpot(5.8, 2.5),
                 FlSpot(6, 4),
                 FlSpot(6.5, 3),
-                FlSpot(7, 4),
+                FlSpot(8, 4),
 
               ],
               isCurved:true,

@@ -51,7 +51,7 @@ class _HomePageState extends State<HomePage> {
   //}
 
   GlobalKey _globalKey = GlobalKey();
-  int number= 1;
+  int number= 3;
 
 
   @override
@@ -109,7 +109,6 @@ class _HomePageState extends State<HomePage> {
                 Expanded(
                   flex:3,
                   child: Card(
-
                     child: Column(
                       children: [
                         Row(
@@ -121,6 +120,31 @@ class _HomePageState extends State<HomePage> {
                               Graph2(),
                             if(number==3)
                               Graph3(),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            FloatingActionButton(
+                              child: Text('1D'),
+                                onPressed:(){
+                                  setState(() {
+                                    number=1;
+                                  });
+                                }),
+                            FloatingActionButton(
+                                  child: Text('1W'),
+                                  onPressed:(){
+                                  setState(() {
+                                  number=2;
+                                  });
+                                  }),
+                            FloatingActionButton(
+                                child: Text('1M'),
+                                onPressed:(){
+                                  setState(() {
+                                    number=3;
+                                  });
+                                }),
                           ],
                         ),
                         FloatingActionButton(
