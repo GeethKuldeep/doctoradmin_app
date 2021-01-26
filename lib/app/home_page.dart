@@ -3,6 +3,8 @@ import 'dart:typed_data';
 import 'dart:ui' as ui;
 
 import 'package:doctoradmin_app/app/graph1.dart';
+import 'package:doctoradmin_app/app/graph2.dart';
+import 'package:doctoradmin_app/app/sign_in/graph3.dart';
 import 'package:doctoradmin_app/services/auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -49,6 +51,7 @@ class _HomePageState extends State<HomePage> {
   //}
 
   GlobalKey _globalKey = GlobalKey();
+  int number= 1;
 
 
   @override
@@ -112,16 +115,12 @@ class _HomePageState extends State<HomePage> {
                         Row(
                           children: [
                             SizedBox(width: 25,),
-                            Row(
-                              children: [
-
-                              RepaintBoundary(
-                                  key: _globalKey,
-                                  child: Graph()
-                              )
-
-                              ],
-                            ),
+                            if(number ==1)
+                              Graph1(),
+                            if(number==2)
+                              Graph2(),
+                            if(number==3)
+                              Graph3(),
                           ],
                         ),
                         FloatingActionButton(
@@ -129,7 +128,7 @@ class _HomePageState extends State<HomePage> {
                             Icons.download_sharp
                           ),
                           onPressed: (){
-                            _saveScreen();
+                           // _saveScreen();
                           },
                         )
                       ],
@@ -224,18 +223,18 @@ class _HomePageState extends State<HomePage> {
   }
 
 
-  _saveScreen() async {
-    RenderRepaintBoundary boundary =
-    _globalKey.currentContext.findRenderObject();
-    ui.Image image = await boundary.toImage();
-    ByteData byteData = await image.toByteData(format: ui.ImageByteFormat.png);
-    final result = await ImageGallerySaver.saveImage(byteData.buffer.asUint8List());
-    print(result);
-    _toastInfo(result.toString());
-  }
-  _toastInfo(String info) {
-    Fluttertoast.showToast(msg: info, toastLength: Toast.LENGTH_LONG);
-  }
+  ///_saveScreen() async {
+  ///  RenderRepaintBoundary boundary =
+   /// _globalKey.currentContext.findRenderObject();
+   /// ui.Image image = await boundary.toImage();
+  ///  ByteData byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+  ///  final result = await ImageGallerySaver.saveImage(byteData.buffer.asUint8List());
+  ///  print(result);
+ ///   _toastInfo(result.toString());
+ // }
+ // _toastInfo(String info) {
+ //   Fluttertoast.showToast(msg: info, toastLength: Toast.LENGTH_LONG);
+//  }
 
 
 }
