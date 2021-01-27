@@ -25,7 +25,7 @@ class _HomePageState extends State<HomePage> {
 
   File _imageFile;
   ScreenshotController screenshotController = ScreenshotController();
-  var color = const Color(0xffA9FFFF);
+  var color = const Color(0xffB5E4E9);
   GlobalKey _globalKey = GlobalKey();
   int number = 1;
   String name='';
@@ -151,7 +151,7 @@ class _HomePageState extends State<HomePage> {
                   height: 45,
                 ),
                 Card(
-                  elevation: 500,
+                  //elevation: 500,
                   color: color,
                   child: Column(
                     children: [
