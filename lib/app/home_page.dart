@@ -6,6 +6,7 @@ import 'package:doctoradmin_app/app/graph1.dart';
 import 'package:doctoradmin_app/app/graph2.dart';
 import 'package:doctoradmin_app/app/sign_in/graph3.dart';
 import 'package:doctoradmin_app/services/auth.dart';
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -14,8 +15,6 @@ import 'package:screenshot/screenshot.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
-
-
 
 class HomePage extends StatefulWidget {
   HomePage({@required this.auth});
@@ -33,233 +32,237 @@ class _HomePageState extends State<HomePage> {
       print(e.toString());
     }
   }
+
   File _imageFile;
   ScreenshotController screenshotController = ScreenshotController();
-
-  //int _selectedIndex = 0;
-  ///List<Widget> pages = <Widget>[
-   /// Graph(),
-   // Graph(),
-   // Graph(),
-
- /// ];
-
-  ///void navigate(index) async {
-   /// setState(() {
-    ///  _selectedIndex = index;
-    ///});
-  //}
+  var color = const Color(0xffA9FFFF);
 
   GlobalKey _globalKey = GlobalKey();
-  int number= 3;
-
+  int number = 3;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomPadding: false,
-      backgroundColor: Colors.indigo,
+      backgroundColor: Colors.white,
       body: Padding(
-        padding: const EdgeInsets.all(12.0),
+        padding: const EdgeInsets.all(13.0),
         child: Stack(
           fit: StackFit.expand,
           children: [
             Column(
               children: [
                 Padding(
-                  padding: EdgeInsets.only(top: 30.0),
+                  padding: EdgeInsets.only(top: 40.0),
                 ),
-                  Expanded(
-                  flex:2,
-                    child: Card(
-                      child: Column(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(15.0),
-                            child: CircleAvatar(
-                              radius: 50,
-                              child: Icon(
-                                Icons.person_rounded,
-                                size: 75,
-                              ),
-                            ),
-                          ),
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text('DR.T.Geethkuldeep',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 25)),
-                              SizedBox(height: 10,),
-                              Text('XX1234568IND',style: TextStyle(color: Colors.grey,fontSize: 15))
-                            ],
-                          ),
-                          SizedBox(height: 10,),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text('Last active'),
-                              SizedBox(width: 5,),
-                              Text('1 day ago',style: TextStyle(color: Colors.indigo),)
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-
-                Expanded(
-                  flex:3,
-                  child: Card(
-                    child: Column(
+                Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Row(
-                          children: [
-                            SizedBox(width: 25,),
-                            if(number ==1)
-                              Graph1(),
-                            if(number==2)
-                              Graph2(),
-                            if(number==3)
-                              Graph3(),
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            FloatingActionButton(
-                              child: Text('1D'),
-                                onPressed:(){
-                                  setState(() {
-                                    number=1;
-                                  });
-                                }),
-                            FloatingActionButton(
-                                  child: Text('1W'),
-                                  onPressed:(){
-                                  setState(() {
-                                  number=2;
-                                  });
-                                  }),
-                            FloatingActionButton(
-                                child: Text('1M'),
-                                onPressed:(){
-                                  setState(() {
-                                    number=3;
-                                  });
-                                }),
-                          ],
-                        ),
-                        FloatingActionButton(
+                        FlatButton(
+                          onPressed: _signOut,
                           child: Icon(
-                            Icons.download_sharp
+                            Icons.logout,
+                            color: Colors.black,
+                            size: 35,
                           ),
-                          onPressed: (){
-                           // _saveScreen();
-                          },
+                        ),
+                        CircleAvatar(
+                          backgroundColor: Colors.black,
+                          radius: 25,
+                          child: Icon(
+                            Icons.person_rounded,
+                            color: Colors.white,
+                            size: 45,
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 15,
+                    ),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text('DR.T.Geethkuldeep',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 25)),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Text('XX1234568IND',
+                            style: TextStyle(color: Colors.teal, fontSize: 15))
+                      ],
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          'Last active',
+                          style: TextStyle(
+                              color: Colors.black, fontWeight: FontWeight.bold),
+                        ),
+                        SizedBox(
+                          width: 5,
+                        ),
+                        Text(
+                          '1 day ago',
+                          style: TextStyle(
+                              color: Colors.teal, fontWeight: FontWeight.bold),
                         )
                       ],
                     ),
+                  ],
+                ),
+                SizedBox(
+                  height: 45,
+                ),
+                Card(
+                  color: color,
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(5.0),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  shape: BoxShape.rectangle,
+                                  color: Colors.white,
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(7))),
+                              padding: const EdgeInsetsDirectional.only(
+                                  end: 2.5, start: 0.075),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  PopupMenuButton(
+                                    itemBuilder: (_) =>
+                                        <PopupMenuItem<String>>[],
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(5.0),
+                                    child: Text('Flexion'),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          IconButton(
+                            icon: Icon(
+                              Icons.download_sharp,
+                              size: 32,
+                            ),
+                            onPressed: () {
+                              // _saveScreen();
+                            },
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 25,
+                      ),
+                      Row(
+                        children: [
+                          SizedBox(
+                            width: 5,
+                          ),
+                          if (number == 1) Graph1(),
+                          if (number == 2) Graph2(),
+                          if (number == 3) Graph3(),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 5,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          FlatButton(
+                            child: Text('1D'),
+                            onPressed: () {
+                              setState(() {
+                                number = 1;
+                              });
+                            },
+                            splashColor: Colors.red,
+                          ),
+                          FlatButton(
+                            child: Text('1W'),
+                            onPressed: () {
+                              setState(() {
+                                number = 2;
+                              });
+                            },
+                            splashColor: Colors.red,
+                          ),
+                          FlatButton(
+                            child: Text('1M'),
+                            onPressed: () {
+                              setState(() {
+                                number = 3;
+                              });
+                            },
+                            splashColor: Colors.red,
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 25,
+                      ),
+                    ],
                   ),
                 ),
-                 Padding(
-                   padding: const EdgeInsets.all(8.0),
-                   child: Row(
-                      children: [
-                        SizedBox(width: 120,),
-                        Row(
-
-                          children: [
-
-                                Icon(
-                                  Icons.arrow_back,
-                                  color: Colors.white,
-                                  size: 35,
-                                ),
-
-                            SizedBox(width: 35,),
-                            Icon(
-                                  Icons.arrow_forward,
-                                  color: Colors.white,
-                                  size: 35,
-                                ),
-
-                          ],
-                        ),
-                        SizedBox(width: 10,),
-
-                        FlatButton(
-                            child: Row(
-                              children: [
-                                Text('Back',style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 17),),
-                                Row(
-
-                                  children: [
-                                    Icon(
-                                      Icons.subdirectory_arrow_left_outlined,
-                                      color: Colors.white,
-                                      size: 35,
-                                    )
-
-                                  ],
-                                )
-                              ],
-                            ),
-                            onPressed: _signOut,
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.arrow_back_outlined,
+                            color: Colors.black,
+                            size: 38,
                           ),
-                      ],
-                    ),
-                 ),
-
+                          SizedBox(
+                            width: 35,
+                          ),
+                          Icon(
+                            Icons.arrow_forward,
+                            color: Colors.black,
+                            size: 38,
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
               ],
             )
           ],
         ),
       ),
-      //bottomNavigationBar: BottomNavigationBar(
-       /// type: BottomNavigationBarType.shifting,
-        ///items: <BottomNavigationBarItem>[
-        ///  BottomNavigationBarItem(
-         //   icon: Icon(
-         //     Icons.linear_scale
-          //  ),
-         //   label: '1D',
-         //     backgroundColor: Colors.black
-         // ),
-        // BottomNavigationBarItem(
-          ///  icon: Icon(
-         ///       Icons.linear_scale
-        ///    ),
-        ///    label:
-      //        '1W',
-       ///       backgroundColor: Colors.black
-      ///    ),
-      ///    BottomNavigationBarItem(
-     ///       icon: Icon(
-    ///            Icons.linear_scale
-      ///      ),
-      ///      label:
-     ///         '1M',
-     ///       backgroundColor: Colors.black
-     ///       ),
-    ///    ],
-     ///   currentIndex: _selectedIndex,
-      //  onTap: navigate,
-     // ),
     );
   }
 
-
   ///_saveScreen() async {
   ///  RenderRepaintBoundary boundary =
-   /// _globalKey.currentContext.findRenderObject();
-   /// ui.Image image = await boundary.toImage();
+  /// _globalKey.currentContext.findRenderObject();
+  /// ui.Image image = await boundary.toImage();
   ///  ByteData byteData = await image.toByteData(format: ui.ImageByteFormat.png);
   ///  final result = await ImageGallerySaver.saveImage(byteData.buffer.asUint8List());
   ///  print(result);
- ///   _toastInfo(result.toString());
- // }
- // _toastInfo(String info) {
- //   Fluttertoast.showToast(msg: info, toastLength: Toast.LENGTH_LONG);
+  ///   _toastInfo(result.toString());
+  // }
+  // _toastInfo(String info) {
+  //   Fluttertoast.showToast(msg: info, toastLength: Toast.LENGTH_LONG);
 //  }
 
-
 }
-
