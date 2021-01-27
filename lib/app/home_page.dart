@@ -1,30 +1,35 @@
 import 'dart:io';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
-
 import 'package:doctoradmin_app/app/graph1.dart';
 import 'package:doctoradmin_app/app/graph2.dart';
-import 'package:doctoradmin_app/app/sign_in/graph3.dart';
+import 'file:///C:/Users/anirudh/AndroidStudioProjects/doctoradmin_app/lib/app/graph3.dart';
 import 'package:doctoradmin_app/services/auth.dart';
-import 'package:fl_chart/fl_chart.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:screenshot/screenshot.dart';
-
 import 'package:image_gallery_saver/image_gallery_saver.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
+
 
 class HomePage extends StatefulWidget {
   HomePage({@required this.auth});
   final AuthBase auth;
-
   @override
   _HomePageState createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
+
+
+  File _imageFile;
+  ScreenshotController screenshotController = ScreenshotController();
+  var color = const Color(0xffA9FFFF);
+  GlobalKey _globalKey = GlobalKey();
+  int number = 1;
+  String name='';
+
   Future<void> _signOut() async {
     try {
       await widget.auth.signOut();
@@ -32,13 +37,28 @@ class _HomePageState extends State<HomePage> {
       print(e.toString());
     }
   }
+  Future<void> _getusername() async {
+    try {
+      final _firebaseAuth = FirebaseAuth.instance;
+      final user = await _firebaseAuth.currentUser();
+      print("User Name : ${user.displayName}");
+      name=user.displayName;
+      print(name);
+      setState(() {
+        name=name;
+      });
+    } catch (e) {
+      print(e.toString());
+    }
+  }
 
-  File _imageFile;
-  ScreenshotController screenshotController = ScreenshotController();
-  var color = const Color(0xffA9FFFF);
+  @override
+  void initState () {
+    super.initState();
+    _getusername();
+  }
 
-  GlobalKey _globalKey = GlobalKey();
-  int number = 3;
+
 
   @override
   Widget build(BuildContext context) {
@@ -85,9 +105,18 @@ class _HomePageState extends State<HomePage> {
                     Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text('DR.T.Geethkuldeep',
-                            style: TextStyle(
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text('DR.',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 25)),
+                            Text(name,style: TextStyle(
                                 fontWeight: FontWeight.bold, fontSize: 25)),
+
+                          ],
+                        ),
+
                         SizedBox(
                           height: 10,
                         ),
@@ -122,6 +151,7 @@ class _HomePageState extends State<HomePage> {
                   height: 45,
                 ),
                 Card(
+                  elevation: 500,
                   color: color,
                   child: Column(
                     children: [
@@ -160,7 +190,8 @@ class _HomePageState extends State<HomePage> {
                               size: 32,
                             ),
                             onPressed: () {
-                              // _saveScreen();
+                               _saveScreen();
+                               print('pressed');
                             },
                           ),
                         ],
@@ -170,8 +201,11 @@ class _HomePageState extends State<HomePage> {
                       ),
                       Row(
                         children: [
-                          SizedBox(
-                            width: 5,
+                          RepaintBoundary(
+                            key:_globalKey,
+                            child: SizedBox(
+                              width: 5,
+                            ),
                           ),
                           if (number == 1) Graph1(),
                           if (number == 2) Graph2(),
@@ -252,17 +286,19 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  ///_saveScreen() async {
-  ///  RenderRepaintBoundary boundary =
-  /// _globalKey.currentContext.findRenderObject();
-  /// ui.Image image = await boundary.toImage();
-  ///  ByteData byteData = await image.toByteData(format: ui.ImageByteFormat.png);
-  ///  final result = await ImageGallerySaver.saveImage(byteData.buffer.asUint8List());
-  ///  print(result);
-  ///   _toastInfo(result.toString());
-  // }
-  // _toastInfo(String info) {
-  //   Fluttertoast.showToast(msg: info, toastLength: Toast.LENGTH_LONG);
-//  }
+  _saveScreen() async {
+    RenderRepaintBoundary boundary =
+  _globalKey.currentContext.findRenderObject();
+    print("started");
+   ui.Image image = await boundary.toImage();
+    ByteData byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+    final result = await ImageGallerySaver.saveImage(byteData.buffer.asUint8List());
+    print("Ended");
+    print(result);
+    _toastInfo(result.toString());
+  }
+   _toastInfo(String info) {
+    Fluttertoast.showToast(msg: info, toastLength: Toast.LENGTH_LONG);
+ }
 
 }

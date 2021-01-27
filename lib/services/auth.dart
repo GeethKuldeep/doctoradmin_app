@@ -37,6 +37,7 @@ class Auth implements AuthBase {
   @override
   Future<User> currentUser() async {
     final user = await _firebaseAuth.currentUser();
+    print("User Name : ${user.displayName}");
     return _userFromFirebase(user);
   }
 
@@ -59,6 +60,7 @@ class Auth implements AuthBase {
 
   @override
   Future<User> signInWithGoogle() async {
+    print('successful');
     final googleSignIn = GoogleSignIn();
     final googleAccount = await googleSignIn.signIn();
     if (googleAccount != null) {
@@ -71,6 +73,7 @@ class Auth implements AuthBase {
           ),
         );
         return _userFromFirebase(authResult.user);
+
       } else {
         throw PlatformException(
           code: 'ERROR_MISSING_GOOGLE_AUTH_TOKEN',

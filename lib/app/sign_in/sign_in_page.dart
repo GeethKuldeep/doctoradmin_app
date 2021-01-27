@@ -14,6 +14,7 @@ class SignInPage extends StatelessWidget {
   Future<void> _signInWithGoogle() async {
     try {
       await auth.signInWithGoogle();
+
     } catch (e) {
       print(e.toString());
     }
