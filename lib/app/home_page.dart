@@ -148,7 +148,7 @@ String newuid='';
                             size: 35,
                           ),
                         ),
-                        if(url != null)
+                        if(url.isNotEmpty)
                           CircleAvatar(
                           backgroundColor: Colors.black,
                           radius: 30,
