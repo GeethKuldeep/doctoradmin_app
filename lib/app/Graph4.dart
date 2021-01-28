@@ -1,24 +1,20 @@
-
 import 'package:charts_flutter/flutter.dart';
 import "package:flutter/material.dart";
 
 import 'DataManipulation.dart';
 
-class Graph1 extends StatelessWidget {
+class Graph4 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return  Container(
+    return Container(
       width: 325,
       height: 325,
       child: LineChart(
-        DataToGraph().getSeriesData(
-            DataToGraph().manageData(1)),
+        DataToGraph().getSeriesData(DataToGraph().manageData(4)),
+
         animate: true,
       ),
     );
-
-
-
 
   }
 }

@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
@@ -21,6 +23,7 @@ abstract class AuthBase {
 
 class Auth implements AuthBase {
   final _firebaseAuth = FirebaseAuth.instance;
+  String url;
 
   User _userFromFirebase(FirebaseUser user) {
     if (user == null) {
@@ -72,9 +75,11 @@ class Auth implements AuthBase {
             accessToken: googleAuth.accessToken,
           ),
         );
-        return _userFromFirebase(authResult.user);
+        url = authResult.user.photoUrl;
 
-      } else {
+
+
+        } else {
         throw PlatformException(
           code: 'ERROR_MISSING_GOOGLE_AUTH_TOKEN',
           message: 'Missing Google Auth Token',
@@ -92,6 +97,7 @@ class Auth implements AuthBase {
 
   @override
   Future<void> signOut() async {
+
     final googleSignIn = GoogleSignIn();
     await googleSignIn.signOut();
     await _firebaseAuth.signOut();

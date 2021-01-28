@@ -1,14 +1,17 @@
+import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
-import 'package:doctoradmin_app/app/graph1.dart';
-import 'package:doctoradmin_app/app/graph2.dart';
-import 'file:///C:/Users/anirudh/AndroidStudioProjects/doctoradmin_app/lib/app/graph3.dart';
+import 'package:charts_flutter/flutter.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'DataManipulation.dart';
 import 'package:doctoradmin_app/services/auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:save_in_gallery/save_in_gallery.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 
@@ -27,8 +30,18 @@ class _HomePageState extends State<HomePage> {
   ScreenshotController screenshotController = ScreenshotController();
   var color = const Color(0xffB5E4E9);
   GlobalKey _globalKey = GlobalKey();
+  final _imageSaver = ImageSaver();
   int number = 1;
   String name='';
+  String id='';
+  String online='';
+  String time='';
+  String value='';
+  int i=0;
+  var timelst = new List();
+  String url ='';
+String uid ='';
+String newuid='';
 
   Future<void> _signOut() async {
     try {
@@ -51,11 +64,59 @@ class _HomePageState extends State<HomePage> {
       print(e.toString());
     }
   }
+  Future<void> _geturl() async {
+    try {
+      final _firebaseAuth = FirebaseAuth.instance;
+      final googleSignIn = GoogleSignIn();
+      final googleAccount = await googleSignIn.signIn();
+      final googleAuth = await googleAccount.authentication;
+      final authResult = await _firebaseAuth.signInWithCredential(
+        GoogleAuthProvider.getCredential(
+          idToken: googleAuth.idToken,
+          accessToken: googleAuth.accessToken,
+        ),
+      );
+      url = authResult.user.photoUrl;
+      uid =authResult.user.uid;
+      newuid = uid.substring(1,8);
+      setState(() {
+        url=url;
+        newuid=newuid;
+      });
+
+    } catch (e) {
+      print(e.toString());
+    }
+  }
 
   @override
   void initState () {
     super.initState();
     _getusername();
+    _geturl();
+    Firestore.instance.collection('data').getDocuments().then((val){
+        id = val.documents[0].data["id"];
+        online = val.documents[0].data["last active"];
+       time = val.documents[0].data["time"];
+       value = val.documents[0].data["val"];
+       print(id);
+       print(online);
+       print(time);
+       print(value);
+       var time1 = json.decode(time);
+       print(time1);
+       var val1 = json.decode(value);
+       print(val1);
+        List<String> result = online.split('-');
+        print(result[2]);
+
+      //var lastonline = json.decode(online);
+        //print(lastonline);
+
+
+
+
+    });
   }
 
 
@@ -67,8 +128,7 @@ class _HomePageState extends State<HomePage> {
       backgroundColor: Colors.white,
       body: Padding(
         padding: const EdgeInsets.all(13.0),
-        child: Stack(
-          fit: StackFit.expand,
+        child: ListView(
           children: [
             Column(
               children: [
@@ -90,12 +150,8 @@ class _HomePageState extends State<HomePage> {
                         ),
                         CircleAvatar(
                           backgroundColor: Colors.black,
-                          radius: 25,
-                          child: Icon(
-                            Icons.person_rounded,
-                            color: Colors.white,
-                            size: 45,
-                          ),
+                          radius: 30,
+                          backgroundImage: NetworkImage(url),
                         ),
                       ],
                     ),
@@ -120,7 +176,7 @@ class _HomePageState extends State<HomePage> {
                         SizedBox(
                           height: 10,
                         ),
-                        Text('XX1234568IND',
+                        Text(newuid,
                             style: TextStyle(color: Colors.teal, fontSize: 15))
                       ],
                     ),
@@ -151,7 +207,7 @@ class _HomePageState extends State<HomePage> {
                   height: 45,
                 ),
                 Card(
-                  //elevation: 500,
+                  elevation: 10,
                   color: color,
                   child: Column(
                     children: [
@@ -174,7 +230,12 @@ class _HomePageState extends State<HomePage> {
                                 children: [
                                   PopupMenuButton(
                                     itemBuilder: (_) =>
-                                        <PopupMenuItem<String>>[],
+                                        <PopupMenuItem<String>>[
+                                          new PopupMenuItem<String>(
+                                              child: const Text('Iam selected'), value: 'Iam not'),
+                                          new PopupMenuItem<String>(
+                                              child: const Text('Iam not'), value: 'Iam selected'),
+                                        ],
                                   ),
                                   Padding(
                                     padding: const EdgeInsets.all(5.0),
@@ -190,7 +251,7 @@ class _HomePageState extends State<HomePage> {
                               size: 32,
                             ),
                             onPressed: () {
-                               _saveScreen();
+                              _capturePng;
                                print('pressed');
                             },
                           ),
@@ -199,51 +260,128 @@ class _HomePageState extends State<HomePage> {
                       SizedBox(
                         height: 25,
                       ),
-                      Row(
-                        children: [
-                          RepaintBoundary(
-                            key:_globalKey,
-                            child: SizedBox(
-                              width: 5,
-                            ),
+                      Padding(
+                        padding: const EdgeInsets.all(10.0),
+                          child: Row(
+                            children: [
+                              if (number == 1)
+
+
+                                  Container(
+                                    width: 325,
+                                    height: 325,
+                                    child: RepaintBoundary(
+                                      key: _globalKey,
+                                      child: LineChart(
+                                        DataToGraph().getSeriesData(
+                                            DataToGraph().manageData(1)),
+                                        animate: true,
+                                      ),
+                                    ),
+                                  ),
+
+                              if (number == 2)
+                               Container(
+                                    width: 325,
+                                    height: 325,
+                                    child: RepaintBoundary(
+                                      key: _globalKey,
+                                      child: LineChart(
+                                        DataToGraph().getSeriesData(
+                                            DataToGraph().manageData(2)),
+                                        animate: true,
+                                      ),
+                                    ),
+                                  ),
+
+                              if (number == 3)
+                                Container(
+                                    width: 325,
+                                    height: 325,
+                                    child: RepaintBoundary(
+                                      key: _globalKey,
+                                      child: LineChart(
+                                        DataToGraph().getSeriesData(
+                                            DataToGraph().manageData(3)),
+                                        animate: true,
+                                      ),
+                                    ),
+                                  ),
+                              if (number == 4)
+                                 Container(
+                                    width: 325,
+                                    height: 325,
+                                    child: RepaintBoundary(
+                                      key: _globalKey,
+                                      child: LineChart(
+                                        DataToGraph().getSeriesData(
+                                            DataToGraph().manageData(4)),
+                                        animate: true,
+                                      ),
+                                    ),
+                                  ),
+
+                            ],
                           ),
-                          if (number == 1) Graph1(),
-                          if (number == 2) Graph2(),
-                          if (number == 3) Graph3(),
-                        ],
-                      ),
+                        ),
+
                       SizedBox(
                         height: 5,
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          FlatButton(
-                            child: Text('1D'),
-                            onPressed: () {
-                              setState(() {
-                                number = 1;
-                              });
-                            },
-                            splashColor: Colors.red,
+                          SizedBox(
+                            width: 55,
+                            height: 55,
+                            child: FlatButton(
+                              child: Text('1D'),
+                              onPressed: () {
+                                setState(() {
+                                  number = 1;
+                                });
+                              },
+                              splashColor: Colors.red,
+                            ),
                           ),
-                          FlatButton(
-                            child: Text('1W'),
-                            onPressed: () {
-                              setState(() {
-                                number = 2;
-                              });
-                            },
-                            splashColor: Colors.red,
+                          SizedBox(
+                            width: 55,
+                            height: 55,
+                            child: FlatButton(
+                              child: Text('1W'),
+                              onPressed: () {
+                                setState(() {
+                                  number = 2;
+                                });
+                              },
+                              splashColor: Colors.red,
+                            ),
                           ),
-                          FlatButton(
-                            child: Text('1M'),
-                            onPressed: () {
-                              setState(() {
-                                number = 3;
-                              });
-                            },
-                            splashColor: Colors.red,
+                          SizedBox(
+                            width: 55,
+                            height: 55,
+                            child: FlatButton(
+                              child: Text('1M'),
+                              onPressed: () {
+                                setState(() {
+                                  number = 3;
+                                });
+                              },
+                              splashColor: Colors.red,
+                            ),
+                          ),
+                          SizedBox(
+                            width: 65,
+                            height: 55,
+                            child: FlatButton(
+                              child: Text('Max'),
+                              onPressed: () {
+                                setState(() {
+                                  number = 4;
+                                });
+                              },
+                              splashColor: Colors.red,
+                            ),
                           ),
                         ],
                       ),
@@ -300,5 +438,21 @@ class _HomePageState extends State<HomePage> {
    _toastInfo(String info) {
     Fluttertoast.showToast(msg: info, toastLength: Toast.LENGTH_LONG);
  }
+  Future<void> _capturePng(GlobalKey _globalKey) async {
+    try {
+      RenderRepaintBoundary boundary =
+      _globalKey.currentContext.findRenderObject();
+      ui.Image image = await boundary.toImage(pixelRatio: 3.0);
+      ByteData byteData =
+      await image.toByteData(format: ui.ImageByteFormat.png);
+      setState(() {});
+      List<Uint8List> bytesList = [];
+      bytesList.add(byteData.buffer.asUint8List());
+      print(bytesList);
+      _imageSaver.saveImages(imageBytes: bytesList);
+    } catch (e) {
+      print(e);
+    }
+  }
 
 }
