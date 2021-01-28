@@ -42,43 +42,42 @@ class SignInPage extends StatelessWidget {
   Widget _buildContent(BuildContext context) {
     return Padding(
       padding: EdgeInsets.all(16.0),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
-          Text(
-            'Sign in',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 32.0,
-              fontWeight: FontWeight.w600,
+      child: ListView(
+        children:[ Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            SizedBox(
+              height: 150,
             ),
-          ),
-          SizedBox(height: 48.0),
-          SocialSignInButton(
-            assetName: 'images/google-logo.png',
-            text: 'Sign in with Google',
-            textColor: Colors.black87,
-            color: Colors.white,
-            onPressed: _signInWithGoogle,
-          ),
-          SizedBox(height: 8.0),
+            Image.asset('images/hello3.png'),
+            SizedBox(height: 48.0),
+            SocialSignInButton(
+              assetName: 'images/google-logo.png',
+              text: 'Sign in with Google',
+              textColor: Colors.black87,
+              color: Colors.white,
+              onPressed: _signInWithGoogle,
+            ),
+            SizedBox(height: 8.0),
 
-          Text(
-            'or',
-            style: TextStyle(fontSize: 14.0, color: Colors.black87),
-            textAlign: TextAlign.center,
-          ),
-          SizedBox(height: 8.0),
-          SignInButton(
-            text: 'Sign in with email',
-            textColor: Colors.white,
-            color: Colors.teal,
-            onPressed: () => _signInWithEmail(context),
-          ),
+            Text(
+              'or',
+              style: TextStyle(fontSize: 14.0, color: Colors.black87),
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(height: 8.0),
+            SignInButton(
+              text: 'Sign in with email',
+              textColor: Colors.white,
+              color: Colors.teal,
+              onPressed: () => _signInWithEmail(context),
+            ),
 
 
-        ],
+          ],
+        ),
+      ]
       ),
     );
   }

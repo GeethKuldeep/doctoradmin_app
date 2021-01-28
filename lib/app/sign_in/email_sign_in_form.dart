@@ -252,7 +252,7 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
                       width: 2.0,),
                     borderRadius: BorderRadius.circular(12.0),
                   ),
-                  labelStyle: TextStyle(color: Colors.teal,fontSize: 13),
+                  labelStyle: TextStyle(color: Colors.black,fontSize: 13),
                   contentPadding: const EdgeInsets.all(8.0),
                   focusedBorder: OutlineInputBorder(
                     borderSide: BorderSide(

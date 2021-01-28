@@ -12,6 +12,7 @@ class EmailSignInPage extends StatelessWidget {
       appBar: AppBar(
         title: Text('Sign in'),
         elevation: 2.0,
+        backgroundColor: Colors.teal,
       ),
       body: SingleChildScrollView(
         child: Padding(

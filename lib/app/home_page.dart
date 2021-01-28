@@ -39,7 +39,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   String online='';
   String time='';
   String value='';
-  String newusername='';
+  String lastTime;
   int i=0;
   var timelst = new List();
   String url ='';
@@ -73,6 +73,7 @@ String newuid='';
       final user = await _firebaseAuth.currentUser();
       url = user.photoUrl;
       uid = user.uid;
+
       newuid = uid.substring(1,8);
       print(url);
       print(uid);
@@ -97,26 +98,18 @@ String newuid='';
   @override
   void initState () {
     super.initState();
-    WidgetsBinding.instance.addObserver(this);
+
     _getusername();
    _geturl();
     Firestore.instance.collection('users').getDocuments().then((val){
-      print(val.documents.length);
-      newusername = val.documents[0].data['username'];
-    });
-    print("User Name 3 : ${newusername}");
+      lastTime = DateTime.now()
+          .difference(val.documents[0].data['lastlogin'].toDate())
+          .inDays
+          .toString();
 
-  }
-  @override
-  Future<void> didChangeAppLifecycleState(AppLifecycleState state) async {
-    if (state == AppLifecycleState.resumed)
-      await Firestore.instance.collection('last online').document(newuid).setData({
-        'updated': 15 ,
-      });
-    else
-      await Firestore.instance.collection('last online').document(newuid).setData({
-        'updated': 20 ,
-      });
+    });
+
+
   }
 
 
@@ -127,7 +120,7 @@ String newuid='';
       resizeToAvoidBottomPadding: false,
       backgroundColor: Colors.white,
       body: Padding(
-        padding: const EdgeInsets.all(13.0),
+        padding: const EdgeInsets.all(3.0),
         child: ListView(
           children: [
             Column(
@@ -225,7 +218,7 @@ String newuid='';
                           width: 5,
                         ),
                         Text(
-                          '1 day ago',
+                          '1 hr ago',
                           style: TextStyle(
                               color: Colors.teal, fontWeight: FontWeight.bold),
                         )
@@ -236,192 +229,193 @@ String newuid='';
                 SizedBox(
                   height: 45,
                 ),
-                Card(
-                  elevation: 10,
-                  color: color,
-                  child: Column(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(5.0),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                  shape: BoxShape.rectangle,
-                                  color: Colors.white,
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(7))),
-                              padding: const EdgeInsetsDirectional.only(
-                                  end: 2.5, start: 0.075),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  PopupMenuButton(
-                                    itemBuilder: (_) =>
-                                        <PopupMenuItem<String>>[
-                                          new PopupMenuItem<String>(
-                                              child: const Text('Iam selected'), value: 'Iam not'),
-                                          new PopupMenuItem<String>(
-                                              child: const Text('Iam not'), value: 'Iam selected'),
-                                        ],
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(5.0),
-                                    child: Text('Flexion'),
-                                  ),
-                                ],
+                 Card(
+                    elevation: 10,
+                    color: color,
+                    child: Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(5.0),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    shape: BoxShape.rectangle,
+                                    color: Colors.white,
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(7))),
+                                padding: const EdgeInsetsDirectional.only(
+                                    end: 2.5, start: 0.075),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    PopupMenuButton(
+                                      itemBuilder: (_) =>
+                                          <PopupMenuItem<String>>[
+                                            new PopupMenuItem<String>(
+                                                child: const Text('Iam selected'), value: 'Iam not'),
+                                            new PopupMenuItem<String>(
+                                                child: const Text('Iam not'), value: 'Iam selected'),
+                                          ],
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(5.0),
+                                      child: Text('Flexion'),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
-                          ),
-                          IconButton(
-                            icon: Icon(
-                              Icons.download_sharp,
-                              size: 32,
+                            IconButton(
+                              icon: Icon(
+                                Icons.download_sharp,
+                                size: 32,
+                              ),
+                              onPressed: () {
+                                _capturePng(_globalKey);
+                                 print('pressed');
+                              },
                             ),
-                            onPressed: () {
-                              _capturePng(_globalKey);
-                               print('pressed');
-                            },
-                          ),
-                        ],
-                      ),
-                      SizedBox(
-                        height: 25,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(10.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              if (number == 1)
-
-
-                                  Container(
-                                    width: 325,
-                                    height: 325,
-                                    child: RepaintBoundary(
-                                      key: _globalKey,
-                                      child: charts.LineChart(
-                                        DataToGraph().getSeriesData(
-                                            DataToGraph().manageData(1)),
-                                        animate: true,
-                                      ),
-                                    ),
-                                  ),
-
-                              if (number == 2)
-                               Container(
-                                    width: 325,
-                                    height: 325,
-                                    child: RepaintBoundary(
-                                      key: _globalKey,
-                                      child: charts.LineChart(
-                                        DataToGraph().getSeriesData(
-                                            DataToGraph().manageData(2)),
-                                        animate: true,
-                                      ),
-                                    ),
-                                  ),
-
-                              if (number == 3)
-                                Container(
-                                    width: 325,
-                                    height: 325,
-                                    child: RepaintBoundary(
-                                      key: _globalKey,
-                                      child: charts.LineChart(
-                                        DataToGraph().getSeriesData(
-                                            DataToGraph().manageData(3)),
-                                        animate: true,
-                                      ),
-                                    ),
-                                  ),
-                              if (number == 4)
-                                 Container(
-                                    width: 325,
-                                    height: 325,
-                                    child: RepaintBoundary(
-                                      key: _globalKey,
-                                      child: charts.LineChart(
-                                        DataToGraph().getSeriesData(
-                                            DataToGraph().manageData(4)),
-                                        animate: true,
-                                      ),
-                                    ),
-                                  ),
-
-                            ],
-                          ),
+                          ],
                         ),
+                        SizedBox(
+                          height: 25,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(10.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                if (number == 1)
 
-                      SizedBox(
-                        height: 5,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          SizedBox(
-                            width: 55,
-                            height: 55,
-                            child: FlatButton(
-                              child: Text('1D'),
-                              onPressed: () {
-                                setState(() {
-                                  number = 1;
-                                });
-                              },
-                              splashColor: Colors.red,
+
+                                    Container(
+                                      width: MediaQuery.of(context).size.width * 0.8,
+                                      height: MediaQuery.of(context).size.height * 0.4,
+                                      child: RepaintBoundary(
+                                        key: _globalKey,
+                                        child: charts.LineChart(
+                                          DataToGraph().getSeriesData(
+                                              DataToGraph().manageData(1)),
+                                          animate: true,
+                                        ),
+                                      ),
+                                    ),
+
+                                if (number == 2)
+                                 Container(
+                                   width: MediaQuery.of(context).size.width * 0.8,
+                                   height: MediaQuery.of(context).size.height * 0.4,
+                                      child: RepaintBoundary(
+                                        key: _globalKey,
+                                        child: charts.LineChart(
+                                          DataToGraph().getSeriesData(
+                                              DataToGraph().manageData(2)),
+                                          animate: true,
+                                        ),
+                                      ),
+                                    ),
+
+                                if (number == 3)
+                                  Container(
+                                    width: MediaQuery.of(context).size.width * 0.8,
+                                    height: MediaQuery.of(context).size.height * 0.4,
+                                      child: RepaintBoundary(
+                                        key: _globalKey,
+                                        child: charts.LineChart(
+                                          DataToGraph().getSeriesData(
+                                              DataToGraph().manageData(3)),
+                                          animate: true,
+                                        ),
+                                      ),
+                                    ),
+                                if (number == 4)
+                                   Container(
+                                     width: MediaQuery.of(context).size.width * 0.8,
+                                     height: MediaQuery.of(context).size.height * 0.4,
+                                      child: RepaintBoundary(
+                                        key: _globalKey,
+                                        child: charts.LineChart(
+                                          DataToGraph().getSeriesData(
+                                              DataToGraph().manageData(4)),
+                                          animate: true,
+                                        ),
+                                      ),
+                                    ),
+
+                              ],
                             ),
                           ),
-                          SizedBox(
-                            width: 55,
-                            height: 55,
-                            child: FlatButton(
-                              child: Text('1W'),
-                              onPressed: () {
-                                setState(() {
-                                  number = 2;
-                                });
-                              },
-                              splashColor: Colors.red,
+
+                        SizedBox(
+                          height: 5,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SizedBox(
+                              width: 55,
+                              height: 55,
+                              child: FlatButton(
+                                child: Text('1D'),
+                                onPressed: () {
+                                  setState(() {
+                                    number = 1;
+                                  });
+                                },
+                                splashColor: Colors.red,
+                              ),
                             ),
-                          ),
-                          SizedBox(
-                            width: 55,
-                            height: 55,
-                            child: FlatButton(
-                              child: Text('1M'),
-                              onPressed: () {
-                                setState(() {
-                                  number = 3;
-                                });
-                              },
-                              splashColor: Colors.red,
+                            SizedBox(
+                              width: 55,
+                              height: 55,
+                              child: FlatButton(
+                                child: Text('1W'),
+                                onPressed: () {
+                                  setState(() {
+                                    number = 2;
+                                  });
+                                },
+                                splashColor: Colors.red,
+                              ),
                             ),
-                          ),
-                          SizedBox(
-                            width: 65,
-                            height: 55,
-                            child: FlatButton(
-                              child: Text('Max'),
-                              onPressed: () {
-                                setState(() {
-                                  number = 4;
-                                });
-                              },
-                              splashColor: Colors.red,
+                            SizedBox(
+                              width: 55,
+                              height: 55,
+                              child: FlatButton(
+                                child: Text('1M'),
+                                onPressed: () {
+                                  setState(() {
+                                    number = 3;
+                                  });
+                                },
+                                splashColor: Colors.red,
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(
-                        height: 25,
-                      ),
-                    ],
+                            SizedBox(
+                              width: 65,
+                              height: 55,
+                              child: FlatButton(
+                                child: Text('Max'),
+                                onPressed: () {
+                                  setState(() {
+                                    number = 4;
+                                  });
+                                },
+                                splashColor: Colors.red,
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 25,
+                        ),
+                      ],
+                    ),
                   ),
-                ),
+
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Row(
