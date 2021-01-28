@@ -148,7 +148,7 @@ String newuid='';
                             size: 35,
                           ),
                         ),
-                        if(url.isNotEmpty)
+                        if(url != null)
                           CircleAvatar(
                           backgroundColor: Colors.black,
                           radius: 30,
@@ -464,26 +464,15 @@ String newuid='';
     );
   }
 
-  _saveScreen() async {
-    RenderRepaintBoundary boundary =
-  _globalKey.currentContext.findRenderObject();
-    print("started");
-   ui.Image image = await boundary.toImage();
-    ByteData byteData = await image.toByteData(format: ui.ImageByteFormat.png);
-    final result = await ImageGallerySaver.saveImage(byteData.buffer.asUint8List());
-    print("Ended");
-    print(result);
-    _toastInfo(result.toString());
-  }
-   _toastInfo(String info) {
-    Fluttertoast.showToast(msg: info, toastLength: Toast.LENGTH_LONG);
- }
+
   Future<void> _capturePng(GlobalKey _globalKey) async {
     try {
       RenderRepaintBoundary boundary = _globalKey.currentContext.findRenderObject();
       ui.Image image = await boundary.toImage(pixelRatio: 3.0);
       ByteData byteData = await image.toByteData(format: ui.ImageByteFormat.png);
-      setState(() {});
+      setState(() {
+        print('hello');
+      });
       List<Uint8List> bytesList = [];
       bytesList.add(byteData.buffer.asUint8List());
       print(bytesList);
