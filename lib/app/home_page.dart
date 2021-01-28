@@ -281,7 +281,7 @@ String newuid='';
                               size: 32,
                             ),
                             onPressed: () {
-                              _capturePng;
+                              _capturePng(_globalKey);
                                print('pressed');
                             },
                           ),
@@ -480,11 +480,9 @@ String newuid='';
  }
   Future<void> _capturePng(GlobalKey _globalKey) async {
     try {
-      RenderRepaintBoundary boundary =
-      _globalKey.currentContext.findRenderObject();
+      RenderRepaintBoundary boundary = _globalKey.currentContext.findRenderObject();
       ui.Image image = await boundary.toImage(pixelRatio: 3.0);
-      ByteData byteData =
-      await image.toByteData(format: ui.ImageByteFormat.png);
+      ByteData byteData = await image.toByteData(format: ui.ImageByteFormat.png);
       setState(() {});
       List<Uint8List> bytesList = [];
       bytesList.add(byteData.buffer.asUint8List());
