@@ -73,7 +73,7 @@ class SignInPage extends StatelessWidget {
           SignInButton(
             text: 'Sign in with email',
             textColor: Colors.white,
-            color: Colors.indigo,
+            color: Colors.teal,
             onPressed: () => _signInWithEmail(context),
           ),
 

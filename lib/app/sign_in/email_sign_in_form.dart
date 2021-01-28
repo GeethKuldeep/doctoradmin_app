@@ -1,9 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-
 import 'package:doctoradmin_app/common_widgets/form_submit_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
 import 'package:doctoradmin_app/services/auth.dart';
 import 'package:provider/provider.dart';
 
@@ -32,7 +30,6 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
   String get _password => _passwordController.text;
   EmailSignInFormType _formType = EmailSignInFormType.signIn;
   User authResult;
-  var color1 = const Color(0xffFBD00D);
   bool _passwordVisible;
   final snackBar = SnackBar(content: Text('Email is already registered'));
   String hello;
@@ -129,191 +126,194 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
         ? 'Need an account? \n         Sign up'
         : 'Have an account? \n         Sign in';
     return SingleChildScrollView(
-      child: Form(
-        key: _formkey,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            if(_formType == EmailSignInFormType.register)
+      child: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Form(
+          key: _formkey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if(_formType == EmailSignInFormType.register)
+                TextFormField(
+                  style:TextStyle(color:Colors.teal),
+                  cursorColor: Colors.teal,
+                  key: ValueKey("UserName"),
+                  validator: (value){
+                    if (value.isEmpty){
+                      return 'Enter your Name';
+                    }
+                    return null;
+                  },
+                  controller: _UsernameController,
+                  focusNode: _UsernameFocusNode,
+                  decoration: InputDecoration(
+                    labelStyle: TextStyle(color: Colors.black,fontSize: 13),
+                    contentPadding: const EdgeInsets.all(8.0),
+                    errorBorder: new OutlineInputBorder(
+                      borderSide: new BorderSide(color: Colors.teal,
+                        width: 2.0,),
+                      borderRadius: BorderRadius.circular(12.0),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Colors.teal,
+                        width: 2.0,
+                      ),
+                      borderRadius: BorderRadius.circular(12.0),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Colors.teal,
+                        width: 2.0,
+                      ),
+                      borderRadius: BorderRadius.circular(12.0),
+                    ),
+                    labelText: 'UserName',
+                    errorStyle: TextStyle(
+                      color: Colors.red,
+                    ),
+
+                  ),
+                  autocorrect: false,
+
+                  keyboardType: TextInputType.name,
+                  textInputAction: TextInputAction.next,
+                  onEditingComplete: _UsernameEditingComplete,
+                ),
+
+              SizedBox(height: MediaQuery.of(context).size.height *0.030,),
+
+
               TextFormField(
-                style:TextStyle(color:Colors.indigo),
-                cursorColor: Colors.indigo,
-                key: ValueKey("UserName"),
+                style: TextStyle(color: Colors.black),
+                cursorColor: Colors.teal,
+                key: ValueKey("email"),
                 validator: (value){
-                  if (value.isEmpty){
-                    return '                                               Enter your Name';
+                  if (value.isEmpty || !value.contains('@')){
+                    return 'Please enter a valid email';
                   }
                   return null;
                 },
-                controller: _UsernameController,
-                focusNode: _UsernameFocusNode,
+                controller: _emailController,
+                focusNode: _emailFocusNode,
                 decoration: InputDecoration(
-                  labelStyle: TextStyle(color: Colors.indigo,fontSize: 13),
+                  labelStyle: TextStyle(color: Colors.black,fontSize: 13),
                   contentPadding: const EdgeInsets.all(8.0),
                   errorBorder: new OutlineInputBorder(
-                    borderSide: new BorderSide(color: Colors.indigo,
+                    borderSide: new BorderSide(color: Colors.teal,
                       width: 2.0,),
                     borderRadius: BorderRadius.circular(12.0),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderSide: BorderSide(
-                      color: Colors.indigo,
+                      color: Colors.teal,
                       width: 2.0,
                     ),
                     borderRadius: BorderRadius.circular(12.0),
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(
-                      color: Colors.indigo,
+                      color: Colors.teal,
                       width: 2.0,
                     ),
                     borderRadius: BorderRadius.circular(12.0),
                   ),
-                  labelText: 'UserName',
+                  labelText: 'Email ID',
                   errorStyle: TextStyle(
-                    color: color1,
+                    color:  Colors.red,
                   ),
 
                 ),
                 autocorrect: false,
+                keyboardType: TextInputType.emailAddress,
 
-                keyboardType: TextInputType.name,
                 textInputAction: TextInputAction.next,
-                onEditingComplete: _UsernameEditingComplete,
+                onEditingComplete: _emailEditingComplete,
               ),
 
-            SizedBox(height: MediaQuery.of(context).size.height *0.030,),
 
+              SizedBox(height: MediaQuery.of(context).size.height*0.030,),
 
-            TextFormField(
-              style: TextStyle(color: Colors.indigo),
-              cursorColor: Colors.indigo,
-              key: ValueKey("email"),
-              validator: (value){
-                if (value.isEmpty || !value.contains('@vitstudent.ac.in')){
-                  return '                                Please enter a valid email';
-                }
-                return null;
-              },
-              controller: _emailController,
-              focusNode: _emailFocusNode,
-              decoration: InputDecoration(
-                labelStyle: TextStyle(color: Colors.indigo,fontSize: 13),
-                contentPadding: const EdgeInsets.all(8.0),
-                errorBorder: new OutlineInputBorder(
-                  borderSide: new BorderSide(color: Colors.indigo,
-                    width: 2.0,),
-                  borderRadius: BorderRadius.circular(12.0),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(
-                    color: Colors.indigo,
-                    width: 2.0,
-                  ),
-                  borderRadius: BorderRadius.circular(12.0),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(
-                    color: Colors.indigo,
-                    width: 2.0,
-                  ),
-                  borderRadius: BorderRadius.circular(12.0),
-                ),
-                labelText: 'Email ID',
-                errorStyle: TextStyle(
-                  color: color1,
-                ),
+              TextFormField(
+                style: TextStyle(color: Colors.black),
+                cursorColor: Colors.teal,
 
-              ),
-              autocorrect: false,
-              keyboardType: TextInputType.emailAddress,
-
-              textInputAction: TextInputAction.next,
-              onEditingComplete: _emailEditingComplete,
-            ),
-
-
-            SizedBox(height: MediaQuery.of(context).size.height*0.030,),
-
-            TextFormField(
-              style: TextStyle(color: Colors.indigo),
-              cursorColor: Colors.indigo,
-
-              key: ValueKey("password1"),
-              validator: (value){
-                if (value.isEmpty || value.length<7){
-                  return '                   Please enter atleast 7 characters';
-                }
-                return null;
-              },
-              decoration: InputDecoration(
-                errorBorder: new OutlineInputBorder(
-                  borderSide: new BorderSide(color: Colors.indigo,
-                    width: 2.0,),
-                  borderRadius: BorderRadius.circular(12.0),
-                ),
-                labelStyle: TextStyle(color: Colors.indigo,fontSize: 13),
-                contentPadding: const EdgeInsets.all(8.0),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(
-                    color: Colors.indigo,
-                    width: 2.0,
-                  ),
-                  borderRadius: BorderRadius.circular(12.0),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(
-                    color: Colors.indigo,
-                    width: 2.0,
-                  ),
-                  borderRadius: BorderRadius.circular(12.0),
-                ),
-                labelText: 'Password',
-                errorStyle: TextStyle(
-                  color: color1,
-                ),
-                suffixIcon: IconButton(
-                  icon: Icon(
-                    // Based on passwordVisible state choose the icon
-                    _passwordVisible
-                        ? Icons.visibility
-                        : Icons.visibility_off,
-                    color: Colors.white,
-                  ),
-                  onPressed: () {
-                    // Update the state i.e. toogle the state of passwordVisible variable
-                    setState(() {
-                      _passwordVisible = !_passwordVisible;
-                    });
-                  },
-                ),
-              ),
-              controller: _passwordController,
-              focusNode: _password1FocusNode,
-              textInputAction: TextInputAction.done,
-
-              onEditingComplete: _submit,
-              obscureText: !_passwordVisible,
-            ),
-
-            FormSubmitButton(
-                text: primaryText,
-
-                onPressed:(){
-                  if (_formkey.currentState.validate() == true) {
-                    _submit();
+                key: ValueKey("password1"),
+                validator: (value){
+                  if (value.isEmpty || value.length<7){
+                    return 'Please enter atleast 7 characters';
                   }
-                }
+                  return null;
+                },
+                decoration: InputDecoration(
+                  errorBorder: new OutlineInputBorder(
+                    borderSide: new BorderSide(color: Colors.teal,
+                      width: 2.0,),
+                    borderRadius: BorderRadius.circular(12.0),
+                  ),
+                  labelStyle: TextStyle(color: Colors.teal,fontSize: 13),
+                  contentPadding: const EdgeInsets.all(8.0),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Colors.teal,
+                      width: 2.0,
+                    ),
+                    borderRadius: BorderRadius.circular(12.0),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Colors.teal,
+                      width: 2.0,
+                    ),
+                    borderRadius: BorderRadius.circular(12.0),
+                  ),
+                  labelText: 'Password',
+                  errorStyle: TextStyle(
+                    color:  Colors.red,
+                  ),
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      // Based on passwordVisible state choose the icon
+                      _passwordVisible
+                          ? Icons.visibility
+                          : Icons.visibility_off,
+                      color: Colors.black,
+                    ),
+                    onPressed: () {
+                      // Update the state i.e. toogle the state of passwordVisible variable
+                      setState(() {
+                        _passwordVisible = !_passwordVisible;
+                      });
+                    },
+                  ),
+                ),
+                controller: _passwordController,
+                focusNode: _password1FocusNode,
+                textInputAction: TextInputAction.done,
 
-            ),
-            SizedBox(height: MediaQuery.of(context).size.height*0.02,),
+                onEditingComplete: _submit,
+                obscureText: !_passwordVisible,
+              ),
+              SizedBox(height: MediaQuery.of(context).size.height*0.05,),
+              FormSubmitButton(
+                  text: primaryText,
 
-            FlatButton(
-              child: Text(secondaryText,style: TextStyle(color: Colors.indigo),),
-              onPressed: _toggleFormType,
-            ),
-          ],
+                  onPressed:(){
+                    if (_formkey.currentState.validate() == true) {
+                      _submit();
+                    }
+                  }
+
+              ),
+              SizedBox(height: MediaQuery.of(context).size.height*0.02,),
+
+              FlatButton(
+                child: Text(secondaryText,style: TextStyle(color: Colors.teal),),
+                onPressed: _toggleFormType,
+              ),
+            ],
+          ),
         ),
       ),
     );

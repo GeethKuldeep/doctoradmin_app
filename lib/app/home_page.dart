@@ -2,8 +2,10 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
-import 'package:charts_flutter/flutter.dart';
+import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter_conditional_rendering/conditional.dart';
 import 'DataManipulation.dart';
 import 'package:doctoradmin_app/services/auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -23,7 +25,7 @@ class HomePage extends StatefulWidget {
   _HomePageState createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
 
   File _imageFile;
@@ -37,6 +39,7 @@ class _HomePageState extends State<HomePage> {
   String online='';
   String time='';
   String value='';
+  String newusername='';
   int i=0;
   var timelst = new List();
   String url ='';
@@ -56,7 +59,7 @@ String newuid='';
       final user = await _firebaseAuth.currentUser();
       print("User Name : ${user.displayName}");
       name=user.displayName;
-      print(name);
+      print("User Name1 : ${name}");
       setState(() {
         name=name;
       });
@@ -67,18 +70,12 @@ String newuid='';
   Future<void> _geturl() async {
     try {
       final _firebaseAuth = FirebaseAuth.instance;
-      final googleSignIn = GoogleSignIn();
-      final googleAccount = await googleSignIn.signIn();
-      final googleAuth = await googleAccount.authentication;
-      final authResult = await _firebaseAuth.signInWithCredential(
-        GoogleAuthProvider.getCredential(
-          idToken: googleAuth.idToken,
-          accessToken: googleAuth.accessToken,
-        ),
-      );
-      url = authResult.user.photoUrl;
-      uid =authResult.user.uid;
+      final user = await _firebaseAuth.currentUser();
+      url = user.photoUrl;
+      uid = user.uid;
       newuid = uid.substring(1,8);
+      print(url);
+      print(uid);
       setState(() {
         url=url;
         newuid=newuid;
@@ -88,35 +85,38 @@ String newuid='';
       print(e.toString());
     }
   }
+  Future<void> _getcurrentuser() async {
+    try {
+      final _firebaseAuth = FirebaseAuth.instance;
+      final user = await _firebaseAuth.currentUser();
+    } catch (e) {
+      print(e.toString());
+    }
+  }
 
   @override
   void initState () {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _getusername();
-    _geturl();
-    Firestore.instance.collection('data').getDocuments().then((val){
-        id = val.documents[0].data["id"];
-        online = val.documents[0].data["last active"];
-       time = val.documents[0].data["time"];
-       value = val.documents[0].data["val"];
-       print(id);
-       print(online);
-       print(time);
-       print(value);
-       var time1 = json.decode(time);
-       print(time1);
-       var val1 = json.decode(value);
-       print(val1);
-        List<String> result = online.split('-');
-        print(result[2]);
-
-      //var lastonline = json.decode(online);
-        //print(lastonline);
-
-
-
-
+   _geturl();
+    Firestore.instance.collection('users').getDocuments().then((val){
+      print(val.documents.length);
+      newusername = val.documents[0].data['username'];
     });
+    print("User Name 3 : ${newusername}");
+
+  }
+  @override
+  Future<void> didChangeAppLifecycleState(AppLifecycleState state) async {
+    if (state == AppLifecycleState.resumed)
+      await Firestore.instance.collection('last online').document(newuid).setData({
+        'updated': 15 ,
+      });
+    else
+      await Firestore.instance.collection('last online').document(newuid).setData({
+        'updated': 20 ,
+      });
   }
 
 
@@ -133,7 +133,7 @@ String newuid='';
             Column(
               children: [
                 Padding(
-                  padding: EdgeInsets.only(top: 40.0),
+                  padding: EdgeInsets.only(top: 15.0),
                 ),
                 Column(
                   children: [
@@ -148,11 +148,23 @@ String newuid='';
                             size: 35,
                           ),
                         ),
-                        CircleAvatar(
+                        if(url != null)
+                          CircleAvatar(
                           backgroundColor: Colors.black,
                           radius: 30,
                           backgroundImage: NetworkImage(url),
                         ),
+                        if(url == null)
+                          CircleAvatar(
+                            backgroundColor: Colors.black,
+                            radius: 30,
+                            child: Icon(
+                             Icons.person_rounded,
+                              size: 45,
+                              color: Colors.white,
+                            ),
+                          ),
+
                       ],
                     ),
                     SizedBox(
@@ -167,8 +179,21 @@ String newuid='';
                             Text('DR.',
                                 style: TextStyle(
                                     fontWeight: FontWeight.bold, fontSize: 25)),
-                            Text(name,style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 25)),
+                              if(name!=null)
+                                Text(name,
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold, fontSize: 25)),
+                              if(name==null)
+                                Text('Test Rat',style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25)),
+
+
+                              /*Conditional.single(
+                              conditionBuilder: (BuildContext context) => name!=null ,
+                              widgetBuilder: (BuildContext context) => Text(name,
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold, fontSize: 25)),
+                              fallbackBuilder: (BuildContext context) =>Text(newusername,style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25))
+                            ),*/
 
                           ],
                         ),
@@ -176,8 +201,13 @@ String newuid='';
                         SizedBox(
                           height: 10,
                         ),
-                        Text(newuid,
-                            style: TextStyle(color: Colors.teal, fontSize: 15))
+                        if(newuid!=null)
+                          Text(newuid,
+                            style: TextStyle(color: Colors.teal, fontSize: 15)),
+                        if(newuid == null)
+                          Text('XX12345678IND',
+                              style: TextStyle(color: Colors.teal, fontSize: 15))
+
                       ],
                     ),
                     SizedBox(
@@ -263,6 +293,7 @@ String newuid='';
                       Padding(
                         padding: const EdgeInsets.all(10.0),
                           child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               if (number == 1)
 
@@ -272,7 +303,7 @@ String newuid='';
                                     height: 325,
                                     child: RepaintBoundary(
                                       key: _globalKey,
-                                      child: LineChart(
+                                      child: charts.LineChart(
                                         DataToGraph().getSeriesData(
                                             DataToGraph().manageData(1)),
                                         animate: true,
@@ -286,7 +317,7 @@ String newuid='';
                                     height: 325,
                                     child: RepaintBoundary(
                                       key: _globalKey,
-                                      child: LineChart(
+                                      child: charts.LineChart(
                                         DataToGraph().getSeriesData(
                                             DataToGraph().manageData(2)),
                                         animate: true,
@@ -300,7 +331,7 @@ String newuid='';
                                     height: 325,
                                     child: RepaintBoundary(
                                       key: _globalKey,
-                                      child: LineChart(
+                                      child: charts.LineChart(
                                         DataToGraph().getSeriesData(
                                             DataToGraph().manageData(3)),
                                         animate: true,
@@ -313,7 +344,7 @@ String newuid='';
                                     height: 325,
                                     child: RepaintBoundary(
                                       key: _globalKey,
-                                      child: LineChart(
+                                      child: charts.LineChart(
                                         DataToGraph().getSeriesData(
                                             DataToGraph().manageData(4)),
                                         animate: true,
@@ -398,18 +429,27 @@ String newuid='';
                     children: [
                       Row(
                         children: [
-                          Icon(
-                            Icons.arrow_back_outlined,
-                            color: Colors.black,
-                            size: 38,
+                          FlatButton(
+                            onPressed:(){},
+                            child: Icon(
+                              Icons.arrow_back_outlined,
+                              color: Colors.black,
+                              size: 38,
+                            ),
+
                           ),
                           SizedBox(
                             width: 35,
                           ),
-                          Icon(
-                            Icons.arrow_forward,
-                            color: Colors.black,
-                            size: 38,
+                          FlatButton(
+                            onPressed: (){
+
+                            },
+                            child: Icon(
+                              Icons.arrow_forward,
+                              color: Colors.black,
+                              size: 38,
+                            ),
                           ),
                         ],
                       ),

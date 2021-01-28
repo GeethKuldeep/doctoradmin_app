@@ -12,9 +12,6 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   var color = const Color(0xffB5E4E9);
-  var color1 = const Color(0xff51D5E3);
-  var color2 = const Color(0xff03B0C7);
-  var color3 = const Color(0xff1C6397);
   @override
   void initState() {
     // TODO: implement initState
@@ -47,38 +44,24 @@ class _SplashScreenState extends State<SplashScreen> {
                     children: <Widget>[
                       SizedBox(
                         child: CircularProgressIndicator(
-                          strokeWidth: 11,
-                          backgroundColor: Colors.white,
-                          valueColor: new AlwaysStoppedAnimation<Color>(
-                              color1),
-                        ),
-                        width: 205,
-                        height: 205,
-                      ),
-                      SizedBox(
-                        child: CircularProgressIndicator(
                           strokeWidth: 8,
                           backgroundColor: Colors.white,
                           valueColor: new AlwaysStoppedAnimation<Color>(
-                              color2),
+                              Colors.deepOrange),
                         ),
-                        width: 210,
-                        height: 210,
+                        width: 203,
+                        height: 203,
                       ),
-                      SizedBox(
-                        child: CircularProgressIndicator(
-                          strokeWidth: 5,
-                          backgroundColor: Colors.white,
-                          valueColor: new AlwaysStoppedAnimation<Color>(
-                             color3),
-                        ),
-                        width: 215,
-                        height: 215,
-                      ),
+
                       CircleAvatar(
                         backgroundColor: Colors.white,
                         radius: 100.0,
-                        child: Image.asset('images/image 83.png'),
+                        child:
+                          Icon(
+                            Icons.local_hospital_sharp,
+                            color: Colors.deepOrange,
+                            size: 125,
+                          )
                       ),
                       Padding(
                         padding: EdgeInsets.only(top: 10.0),

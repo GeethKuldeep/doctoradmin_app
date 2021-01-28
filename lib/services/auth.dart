@@ -76,6 +76,12 @@ class Auth implements AuthBase {
           ),
         );
         url = authResult.user.photoUrl;
+        /*uid =authResult.user.uid;
+        newuid = uid.substring(1,8);
+        setState(() {
+          url=url;
+          newuid=newuid;
+        });*/
 
 
 
